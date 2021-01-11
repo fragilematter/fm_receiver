@@ -23,11 +23,11 @@
 #define DEFAULT_BAND_INDEX 2
 
 // Define Arduino digital outputs for pins (display)
-#define PIN_CLK 7
-#define PIN_DIN 6
+#define PIN_CLK 3
+#define PIN_DIN 4
 #define PIN_DC 5
-#define PIN_RST 4
-#define PIN_CE 3
+#define PIN_RST 6
+#define PIN_CE 7
 #define PIN_BL 2
 
 /*#define PIN_CLK  4
