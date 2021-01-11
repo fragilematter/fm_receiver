@@ -52,7 +52,7 @@ void Graphics::showTuningBox() {
     }
   }
   display.setFont(MedvedFont);
-  display.print((char *)"Searching...", CENTER, 20);
+  display.print((char *)"Searching", CENTER, 20);
   display.update();
   delay(50);
   display.disableSleep();
