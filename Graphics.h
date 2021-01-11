@@ -42,7 +42,7 @@ class Graphics {
     void toggleBL();
     void showSplash();
     void switchBass();
-    void Graphics::drawBandSelect(int currentBand);
+    void drawBandSelect(int currentBand);
     void updateState(int strength, bool stereo, int volume, String freqText,
                      String station);
 };
