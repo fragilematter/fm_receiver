@@ -32,16 +32,26 @@ void setup() {
 void loop() {
   // Read analog signal from buttons
   int inV = analogRead(A0);
-  // Menu Button presseded
-  if (inV > 500 && inV < 524 && checkMillis(300)) {
+  
+  // down Button presseded
+  if (inV > 600 && inV < 800 && checkMillis(300)) {
     graphics.menu++;
     if (graphics.menu > MENU_ITEMS_COUNT) {
       graphics.menu = 1;
     }
     graphics.drawMenu();
   }
+
+  if (inV > 100 && inV < 250 && checkMillis(300)) {
+    graphics.menu--;
+    if (graphics.menu < 1) {
+      graphics.menu = MENU_ITEMS_COUNT;
+    }
+    graphics.drawMenu();
+  }
+  
   // Left Button presseded
-  if (inV < 50 && checkMillis(150)) {
+  if (inV < 100 && checkMillis(150)) {
     switch (graphics.menu) {
       case MENU_VOLUME:
         fm.lowerVolume();
@@ -83,7 +93,7 @@ void loop() {
     }
   }
   // Right Button pressed
-  if (inV < 700 && inV > 660 && checkMillis(150)) {
+  if (inV > 250 && inV < 400 && checkMillis(150)) {
     switch (graphics.menu) {
       case MENU_VOLUME:
         fm.higherVolume();
