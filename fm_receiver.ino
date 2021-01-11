@@ -11,6 +11,7 @@
 #include "FM.h"
 #include "Graphics.h"
 #include "Tools.h"
+#include <Wire.h>
 
 Graphics graphics;
 FM fm;
