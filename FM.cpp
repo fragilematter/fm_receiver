@@ -204,6 +204,8 @@ int FM::readState() {
     if (noRDSCounter > 100) {
       station = "RDS";
       radiotext = "";
+      rdsPI = 0;
+      rdsPTY = 0;
       noRDSCounter = 0;
     }
   }
