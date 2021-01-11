@@ -44,7 +44,7 @@ class FM {
     char segRDS[8];
     char segRDS1[64];
     char indexRDS1;
-    word FM::getRegister(byte reg);
+    word getRegister(byte reg);
     void setRegister(byte reg, const word value);
     void updateRegister(byte reg, word mask, word value);
     void writeRegister(byte reg, unsigned int value);
