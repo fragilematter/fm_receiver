@@ -150,6 +150,9 @@ void FM::getRDS() {
   } else {
     switch (grp) {
       case 0:
+        rdsPI = RDS[0];
+        rdsPTY = (RDS[1] >> 5) & 0x1f;
+      
         i = (RDS[1] & 3) << 1;
         segRDS[i] = (RDS[3] >> 8);
         segRDS[i + 1] = (RDS[3] & 0xFF);

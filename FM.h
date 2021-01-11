@@ -61,6 +61,9 @@ class FM {
     String freqText = "";
     String station = "";
     String radiotext = "";
+    word rdsPI = 0;
+    byte rdsPTY = 0;
+    
     bool isTuning = false;
     void init();
     void getRDS();

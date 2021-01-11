@@ -139,5 +139,5 @@ void loop() {
   fm.readState();
   // Update graphics accoring to the current data got from FM receiver
   graphics.updateState(fm.strength, fm.stereo, fm.volume, fm.freqText,
-                       fm.station);
+                       String(fm.rdsPI, HEX) + " " + String(fm.rdsPTY) + " | " + fm.station);
 }
