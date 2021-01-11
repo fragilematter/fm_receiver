@@ -17,8 +17,13 @@
 #include "internal.h"
 #include "logo.c"
 
-const String Bands[5] PROGMEM = {"US/EUROPE", "JAPAN", "WORLDWIDE",
-                                 "EAST EUROPE"
+const char band1[] PROGMEM = "US/EUROPE";
+const char band2[] PROGMEM = "JAPAN";
+const char band3[] PROGMEM = "WORLDWIDE";
+const char band4[] PROGMEM = "EAST EUROPE";
+
+const char* const Bands[] PROGMEM = {band1, band2, band3,
+                                 band4
                                 };
 
 extern unsigned char MediumNumbers[];
@@ -30,7 +35,7 @@ LCD5110 display(PIN_CLK, PIN_DIN, PIN_DC, PIN_RST, PIN_CE);
 
 void Graphics::showSplash() {
   display.clrScr();
-  display.drawBitmap(0, 0, logo, 84, 48);
+  display.drawBitmap(0, 0, (unsigned char*)logo, 84, 48);
   display.update();
   delay(1500);
   display.clrScr();
@@ -47,7 +52,7 @@ void Graphics::showTuningBox() {
     }
   }
   display.setFont(MedvedFont);
-  display.print(utf8rus("Поиск..."), CENTER, 20);
+  display.print((char *)"Searching...", CENTER, 20);
   display.update();
   delay(50);
   display.disableSleep();
@@ -64,10 +69,10 @@ void Graphics::displayBasics() {
   switch (menu) {
     case 1 ... 4:
       display.setFont(IconsFont);
-      display.print(ICON_MONO, 76, 0);
-      display.print(ICON_FM, 64, 10);
-      display.print(ICON_RDS, 2, 20);
-      display.print(ICON_VOL, 2, 28);
+      display.print((char *)ICON_MONO, 76, 0);
+      display.print((char *)ICON_FM, 64, 10);
+      display.print((char *)ICON_RDS, 2, 20);
+      display.print((char *)ICON_VOL, 2, 28);
       display.update();
       delay(50);
       display.disableSleep();
@@ -77,8 +82,8 @@ void Graphics::displayBasics() {
 
 void Graphics::drawMenuItem(String item) {
   display.setFont(MedvedFont);
-  display.print("            ", CENTER, 40);
-  display.print(utf8rus(item), CENTER, 40);
+  display.print((char *)"            ", CENTER, 40);
+  display.print(item, CENTER, 40);
   display.update();
   delay(50);
   display.disableSleep();
@@ -114,6 +119,9 @@ void Graphics::drawBLMenu(bool on) {
 
 void Graphics::drawBandSelect(int currentBand) {
   display.setFont(TinyFont);
+
+  char bandname[12];
+  
   for (int i = 0; i < 4; i++) {
     if (currentBand == i) {
       display.invertText(true);
@@ -127,7 +135,10 @@ void Graphics::drawBandSelect(int currentBand) {
         }
       }
     }
-    display.print(Bands[i], 15, 3 + (8 * i));
+
+    strcpy_P(bandname, (char *)pgm_read_word(&(Bands[i])));
+    
+    display.print(bandname, 15, 3 + (8 * i));
     if (currentBand == i) {
       display.invertText(false);
     }
@@ -147,56 +158,56 @@ void Graphics::drawMenu() {
   switch (menu) {
     case MENU_VOLUME:
       display.clrScr();
-      drawMenuItem("Громкость");
+      drawMenuItem("Volume");
       resetOldValues();
       displayBasics();
       break;
     case MENU_MANUAL:
-      drawMenuItem("Ручн. настр.");
+      drawMenuItem("Manual Tune");
       break;
     case MENU_AUTO:
-      drawMenuItem("Автонастр.");
+      drawMenuItem("Auto Tune");
       break;
     case MENU_SIGNAL:
       display.clrScr();
-      drawMenuItem("Сигнал");
+      drawMenuItem("Signal");
       signalCurrent = 9;
       strengthAbsSave = 0;
       break;
     case MENU_BL:
       display.clrScr();
-      drawMenuItem("Подсветка");
+      drawMenuItem("Backlight");
       display.setFont(MedvedFont);
-      display.print(utf8rus("Вкл. Выкл."), CENTER, 15);
+      display.print((char *)"On   Off", CENTER, 15);
       drawBLMenu(currentBL);
       break;
     case MENU_BASS:
       display.clrScr();
-      drawMenuItem("Бас");
+      drawMenuItem("Bass");
       display.setFont(MedvedFont);
-      display.print(utf8rus("Вкл. Выкл."), CENTER, 15);
+      display.print((char *)"On   Off", CENTER, 15);
       drawBLMenu(bass);
       display.update();
       break;
     case MENU_BAND:
       display.clrScr();
-      drawMenuItem("Диапазон");
+      drawMenuItem("Band");
       drawBandSelect(band);
       break;
     case MENU_VISUAL:
       display.clrScr();
       visualCurrent1 = 0;
       visualSave1 = 25;
-      drawMenuItem("Визуализация");
+      drawMenuItem("Visualization");
       break;
     case MENU_ABOUT:
       display.clrScr();
       display.setFont(TinyFont);
-      display.drawBitmap(0, 0, about, 84, 35);
+      display.drawBitmap(0, 0, (unsigned char *)about, 84, 35);
       display.printNumI(HW_REVISION, 53, 26);
-      display.print(".", 56, 26);
+      display.print((char *)".", 56, 26);
       display.printNumI(FW_VERSION, 60, 26);
-      drawMenuItem("Прошивка");
+      drawMenuItem("Firmware");
       break;
   }
 }
@@ -215,7 +226,7 @@ void Graphics::updateState(int strength, bool stereo, int volume,
       if (freqText != old_freqText) {
         needUpdate = true;
         display.setFont(MediumNumbers);
-        display.print("/////", 0, 0);
+        display.print((char *)"/////", 0, 0);
         if (freqText.substring(0, 1) == "1") {
           display.print(freqText.substring(0, 3), 6, 0);
         } else {
@@ -240,35 +251,35 @@ void Graphics::updateState(int strength, bool stereo, int volume,
               needUpdate = true;
               old_strength_idx = 1;
             }
-            display.print(ICON_SIGNAL_1, 64, 0);
+            display.print((char *)ICON_SIGNAL_1, 64, 0);
             break;
           case 3 ... 15:
             if (old_strength_idx != 2) {
               needUpdate = true;
               old_strength_idx = 2;
             }
-            display.print(ICON_SIGNAL_2, 64, 0);
+            display.print((char *)ICON_SIGNAL_2, 64, 0);
             break;
           case 16 ... 20:
             if (old_strength_idx != 3) {
               needUpdate = true;
               old_strength_idx = 3;
             }
-            display.print(ICON_SIGNAL_3, 64, 0);
+            display.print((char *)ICON_SIGNAL_3, 64, 0);
             break;
           case 21 ... 35:
             if (old_strength_idx != 4) {
               needUpdate = true;
               old_strength_idx = 4;
             }
-            display.print(ICON_SIGNAL_4, 64, 0);
+            display.print((char *)ICON_SIGNAL_4, 64, 0);
             break;
           case 36 ... 63:
             if (old_strength_idx != 5) {
               needUpdate = true;
               old_strength_idx = 5;
             }
-            display.print(ICON_SIGNAL_5, 64, 0);
+            display.print((char *)ICON_SIGNAL_5, 64, 0);
             break;
         }
         old_strength = strength;
@@ -277,15 +288,15 @@ void Graphics::updateState(int strength, bool stereo, int volume,
         needUpdate = true;
         display.setFont(IconsFont);
         if (stereo) {
-          display.print(ICON_STEREO, 76, 0);
+          display.print((char *)ICON_STEREO, 76, 0);
         } else {
-          display.print(ICON_MONO, 76, 0);
+          display.print((char *)ICON_MONO, 76, 0);
         }
         old_stereo = stereo;
       }
       if (old_station != station && checkMillis2(300) && station.length() > 0) {
         display.setFont(TinyFont);
-        display.print("          ", 15, 20);
+        display.print((char *)"          ", 15, 20);
         display.print(station, 15, 20);
         old_station = station;
         needUpdate = true;
@@ -294,10 +305,10 @@ void Graphics::updateState(int strength, bool stereo, int volume,
         needUpdate = true;
         display.setFont(IconsFont);
         for (int i = 0; i < volume; i++) {
-          display.print(ICON_VOL_PART, 15 + (i * 4), 28);
+          display.print((char *)ICON_VOL_PART, 15 + (i * 4), 28);
         }
         for (int i = volume; i < 15; i++) {
-          display.print(ICON_BLANK, 15 + (i * 4), 28);
+          display.print((char *)ICON_BLANK, 15 + (i * 4), 28);
         }
         old_volume = volume;
       }
@@ -320,7 +331,7 @@ void Graphics::updateState(int strength, bool stereo, int volume,
           signalCurrent = 9;
         }
         display.setFont(TinyFont);
-        display.print("  ", 0, 30);
+        display.print((char *)"  ", 0, 30);
         display.printNumI(strength, 0, 30);
         if (strengthAbs == strengthAbsSave) {
           display.setPixel(signalCurrent, strengthAbs);
