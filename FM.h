@@ -67,7 +67,7 @@ class FM {
     bool isTuning = false;
     void init();
     void getRDS();
-    int readState();
+    void readState();
     void autoTune(byte direc);
     void lowerFrequency();
     void higherFrequency();

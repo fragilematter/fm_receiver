@@ -17,7 +17,7 @@ word FM::getBandAndSpacing() {
               (RDA5807M_BAND_MASK | RDA5807M_SPACE_MASK);
   // Separate channel spacing
   const byte space = band & RDA5807M_SPACE_MASK;
-  if (band & RDA5807M_BAND_MASK == BAND_EAST &&
+  if ((band & RDA5807M_BAND_MASK) == BAND_EAST &&
       !(getRegister(RDA5807M_REG_BLEND) & RDA5807M_FLG_EASTBAND65M))
     // Lower band limit is 50MHz
     band = (band >> RDA5807M_BAND_SHIFT) + 1;
@@ -76,7 +76,7 @@ void FM::setRegister(byte reg, const word value) {
 };
 
 void FM::updateRegister(byte reg, word mask, word value) {
-  setRegister(reg, getRegister(reg) & ~mask | value);
+  setRegister(reg, ((getRegister(reg) & ~mask) | value));
 };
 
 void FM::writeRegister(byte reg, unsigned int value) {
@@ -138,7 +138,7 @@ void FM::getRDS() {
   Wire.endTransmission(0);
   Wire.requestFrom(0x11, 8, 1);
   unsigned int RDS[4];
-  char grp, ver;
+  char grp; //ver;
   for (int i = 0; i < 4; i++) {
     RDS[i] = 256 * Wire.read() + Wire.read();
   }
@@ -146,7 +146,7 @@ void FM::getRDS() {
   int i;
   grp = (RDS[1] >> 12) & 0xf;
   if (RDS[1] & 0x0800) {
-    ver = 1;
+    //ver = 1;
   } else {
     switch (grp) {
       case 0:
@@ -181,7 +181,7 @@ void FM::getRDS() {
   }
 }
 
-int FM::readState() {
+void FM::readState() {
   Wire.requestFrom(0x10, 12);
   for (int i = 0; i < 6; i++) {
     state[i] = 256 * Wire.read() + Wire.read();
