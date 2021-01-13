@@ -29,7 +29,7 @@ const char* const Bands[] PROGMEM = {band1, band2, band3,
 extern unsigned char MediumNumbers[];
 extern unsigned char IconsFont[];
 extern unsigned char TinyFont[];
-extern unsigned char MedvedFont[];
+extern unsigned char SmallFont[];
 // CLK, DIN, DC, RST, CE
 LCD5110 display(PIN_CLK, PIN_DIN, PIN_DC, PIN_RST, PIN_CE);
 
@@ -51,7 +51,7 @@ void Graphics::showTuningBox() {
       display.clrPixel(x, y);
     }
   }
-  display.setFont(MedvedFont);
+  display.setFont(SmallFont);
   display.print((char *)"Searching", CENTER, 20);
   display.update();
   delay(50);
@@ -81,7 +81,7 @@ void Graphics::displayBasics() {
 }
 
 void Graphics::drawMenuItem(String item) {
-  display.setFont(MedvedFont);
+  display.setFont(SmallFont);
   display.print((char *)"            ", CENTER, 40);
   display.print(item, CENTER, 40);
   display.update();
@@ -104,7 +104,7 @@ void Graphics::toggleBL() {
 }
 
 void Graphics::drawBLMenu(bool on) {
-  display.setFont(MedvedFont);
+  display.setFont(SmallFont);
   if (on) {
     display.drawRoundRect(9, 12, 36, 24);
     display.clrRoundRect(39, 12, 72, 24);
@@ -177,14 +177,14 @@ void Graphics::drawMenu() {
     case MENU_BL:
       display.clrScr();
       drawMenuItem("Backlight");
-      display.setFont(MedvedFont);
+      display.setFont(SmallFont);
       display.print((char *)"On   Off", CENTER, 15);
       drawBLMenu(currentBL);
       break;
     case MENU_BASS:
       display.clrScr();
       drawMenuItem("Bass");
-      display.setFont(MedvedFont);
+      display.setFont(SmallFont);
       display.print((char *)"On   Off", CENTER, 15);
       drawBLMenu(bass);
       display.update();
@@ -193,12 +193,6 @@ void Graphics::drawMenu() {
       display.clrScr();
       drawMenuItem("Band");
       drawBandSelect(band);
-      break;
-    case MENU_VISUAL:
-      display.clrScr();
-      visualCurrent1 = 0;
-      visualSave1 = 25;
-      drawMenuItem("Visualization");
       break;
     case MENU_ABOUT:
       display.clrScr();
@@ -349,34 +343,6 @@ void Graphics::updateState(int strength, bool stereo, int volume,
         delay(50);
         display.disableSleep();
       }
-      break;
-    case MENU_VISUAL:
-      int v1 = (1023 - analogRead(A2)) / 30;
-      if (visualCurrent1 > 83) {
-        for (int x = 0; x < 84; x++) {
-          for (int y = 0; y < 37; y++) {
-            display.clrPixel(x, y);
-          }
-        }
-        visualCurrent1 = 0;
-        display.update();
-        delay(50);
-        display.disableSleep();
-      }
-      if (visualSave1 == v1) {
-        display.setPixel(visualCurrent1, v1);
-      } else {
-        if (v1 > visualSave1) {
-          display.drawLine(visualCurrent1, visualSave1 - 1, visualCurrent1, v1);
-        } else {
-          display.drawLine(visualCurrent1, visualSave1 + 1, visualCurrent1, v1);
-        }
-      }
-      visualCurrent1++;
-      visualSave1 = v1;
-      display.update();
-      delay(50);
-      display.disableSleep();
       break;
   }
 }

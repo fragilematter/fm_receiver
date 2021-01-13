@@ -37,11 +37,8 @@
 #define ICON_RDS "2"
 
 // Number of items in menu
-#if HW_REVISION > 3
-#define MENU_ITEMS_COUNT 9
-#else
 #define MENU_ITEMS_COUNT 8
-#endif
+
 // Menu items
 #define MENU_VOLUME 1
 #define MENU_MANUAL 2
@@ -50,13 +47,4 @@
 #define MENU_BL 5
 #define MENU_BASS 6
 #define MENU_BAND 7
-#if HW_REVISION > 3
-#define MENU_VISUAL 8
-#else
-#define MENU_VISUAL -1
-#endif
-#if HW_REVISION > 3
-#define MENU_ABOUT 9
-#else
 #define MENU_ABOUT 8
-#endif

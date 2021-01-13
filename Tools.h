@@ -9,6 +9,6 @@
 */
 
 #include <Arduino.h>
-String utf8rus(String source);
+boolean checkMilliDiff(unsigned int, unsigned long*);
 boolean checkMillis(int m);
 boolean checkMillis2(int m);
